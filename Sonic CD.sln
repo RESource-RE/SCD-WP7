@@ -5,6 +5,8 @@ VisualStudioVersion = 17.14.36429.23 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sonic CD", "Sonic CD\Sonic CD.csproj", "{42202D6B-5FB7-4293-BE9A-D72C1DD7C316}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sonic CD PC", "Sonic CD\Sonic CD PC.csproj", "{12345678-1234-1234-1234-123456789ABC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -15,6 +17,10 @@ Global
 		{42202D6B-5FB7-4293-BE9A-D72C1DD7C316}.Debug|x86.Build.0 = Debug|x86
 		{42202D6B-5FB7-4293-BE9A-D72C1DD7C316}.Release|x86.ActiveCfg = Release|x86
 		{42202D6B-5FB7-4293-BE9A-D72C1DD7C316}.Release|x86.Build.0 = Release|x86
+		{12345678-1234-1234-1234-123456789ABC}.Debug|x86.ActiveCfg = Debug|x86
+		{12345678-1234-1234-1234-123456789ABC}.Debug|x86.Build.0 = Debug|x86
+		{12345678-1234-1234-1234-123456789ABC}.Release|x86.ActiveCfg = Release|x86
+		{12345678-1234-1234-1234-123456789ABC}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

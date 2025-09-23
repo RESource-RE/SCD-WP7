@@ -7,6 +7,10 @@
 
 I used dnSpy to export the VSProj and VS 2022 to compile.
 
+# Known issues
+
+PC port has no music, only sounds
+
 ## How to build
 
 Install the following dependencies:
