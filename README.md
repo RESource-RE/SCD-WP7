@@ -5,7 +5,7 @@
 
 # Tools used
 
-I used dnSpy to export the VSProj and VS 2022 to compile.
+I used dotpeek to export the project and vs2022 to compile, I also used [this](https://github.com/maybekoi/FSNSFix) tool that I made to fix the namespaces.
 
 # Known issues
 
