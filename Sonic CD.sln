@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36429.23 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sonic CD", "Sonic CD\Sonic CD.csproj", "{54F931F8-68DB-4555-9162-9C634E3EF37E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{54F931F8-68DB-4555-9162-9C634E3EF37E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54F931F8-68DB-4555-9162-9C634E3EF37E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54F931F8-68DB-4555-9162-9C634E3EF37E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54F931F8-68DB-4555-9162-9C634E3EF37E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3E7C7F91-B414-49D7-B707-A419A5A9E119}
+	EndGlobalSection
+EndGlobal

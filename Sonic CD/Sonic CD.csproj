@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+  <!--Project was exported from assembly: C:\Users\koishi\Documents\REProjects\SCD-WP7-REDO\Data\Sonic CD.dll-->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{54F931F8-68DB-4555-9162-9C634E3EF37E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>Sonic CD</AssemblyName>
+    <ApplicationVersion>1.0.0.0</ApplicationVersion>
+    <RootNamespace>Retro_Engine</RootNamespace>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Xna.Framework" />
+    <Reference Include="Microsoft.Xna.Framework.Game" />
+    <Reference Include="Microsoft.Xna.Framework.GamerServices" />
+    <Reference Include="Microsoft.Xna.Framework.Graphics" />
+    <Reference Include="Microsoft.Xna.Framework.Input.Touch" />
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="PlayerSystem.cs" />
+    <Compile Include="PlayerObject.cs" />
+    <Compile Include="PlayerStatistics.cs" />
+    <Compile Include="CollisionSensor.cs" />
+    <Compile Include="FileIO.cs" />
+    <Compile Include="FileData.cs" />
+    <Compile Include="StageList.cs" />
+    <Compile Include="GlobalAppDefinitions.cs" />
+    <Compile Include="RenderDevice.cs" />
+    <Compile Include="EngineCallbacks.cs" />
+    <Compile Include="AudioPlayback.cs" />
+    <Compile Include="MusicTrackInfo.cs" />
+    <Compile Include="TextSystem.cs" />
+    <Compile Include="TextMenu.cs" />
+    <Compile Include="FontCharacter.cs" />
+    <Compile Include="GifLoader.cs" />
+    <Compile Include="GifDecoder.cs" />
+    <Compile Include="StageSystem.cs" />
+    <Compile Include="Mappings128x128.cs" />
+    <Compile Include="CollisionMask16x16.cs" />
+    <Compile Include="LayoutMap.cs" />
+    <Compile Include="LineScrollParallax.cs" />
+    <Compile Include="AnimationSystem.cs" />
+    <Compile Include="CollisionBox.cs" />
+    <Compile Include="SpriteFrame.cs" />
+    <Compile Include="SpriteAnimation.cs" />
+    <Compile Include="AnimationFileList.cs" />
+    <Compile Include="Scene3D.cs" />
+    <Compile Include="Vertex3D.cs" />
+    <Compile Include="Face3D.cs" />
+    <Compile Include="SortList.cs" />
+    <Compile Include="GraphicsSystem.cs" />
+    <Compile Include="GfxSurfaceDesc.cs" />
+    <Compile Include="Vertex2D.cs" />
+    <Compile Include="Quad2D.cs" />
+    <Compile Include="DrawVertex.cs" />
+    <Compile Include="DrawVertex3D.cs" />
+    <Compile Include="PaletteEntry.cs" />
+    <Compile Include="ObjectSystem.cs" />
+    <Compile Include="ObjectEntity.cs" />
+    <Compile Include="ObjectDrawList.cs" />
+    <Compile Include="ObjectScript.cs" />
+    <Compile Include="FunctionScript.cs" />
+    <Compile Include="ScriptEngine.cs" />
+    <Compile Include="InputSystem.cs" />
+    <Compile Include="InputResult.cs" />
+    <Compile Include="Sonic_CD\Game.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Microsoft\Xna\Framework.RuntimeProfile" />
+    <EmbeddedResource Include="Microsoft\Xna\Framework.XlastConfiguration" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>
