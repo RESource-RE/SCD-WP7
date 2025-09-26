@@ -232,7 +232,8 @@ namespace Retro_Engine
       {
         FileData fData = new FileData();
         FileIO.fileReader = TitleContainer.OpenStream("Content\\Data.rsdk");
-        if (FileIO.fileReader.Length > 0L)
+        long len = FileIO.fileReader.Length;
+        if (len > 0L)
         {
           FileIO.useRSDKFile = true;
           FileIO.useByteCode = false;
@@ -264,7 +265,7 @@ namespace Retro_Engine
         }
         for (; index < fData.fileName.Length; ++index)
           fData.fileName[index] = char.MinValue;
-        if (FileIO.fileReader.Length > 0L)
+        if (FileIO.fileReader != null)
           FileIO.fileReader.Close();
         FileIO.fileReader = TitleContainer.OpenStream("Content\\Data.rsdk");
         FileIO.fileSize = (uint) FileIO.fileReader.Length;
@@ -285,9 +286,8 @@ namespace Retro_Engine
 
       public static void CloseFile()
       {
-        if (FileIO.fileReader.Length <= 0L)
-          return;
-        FileIO.fileReader.Close();
+        if (FileIO.fileReader != null)
+          FileIO.fileReader.Close();
       }
 
       public static bool CheckCurrentStageFolder(int sNumber)
@@ -713,7 +713,7 @@ namespace Retro_Engine
       {
         if (!FileIO.useRSDKFile)
           return;
-        if (FileIO.fileReader.Length > 0L)
+        if (FileIO.fileReader != null)
           FileIO.fileReader.Close();
         FileIO.fileReader = TitleContainer.OpenStream("Content\\Data.rsdk");
         FileIO.virtualFileOffset = fData.virtualFileOffset;
@@ -792,33 +792,74 @@ namespace Retro_Engine
 
       public static byte ReadSaveRAMData()
       {
-        IsolatedStorageFile storeForApplication = IsolatedStorageFile.GetUserStoreForApplication();
+        #if WINDOWS_PHONE
+        IsolatedStorageFile userStoreForApplication = IsolatedStorageFile.GetUserStoreForApplication();
         try
         {
-          BinaryReader binaryReader = new BinaryReader((Stream) new IsolatedStorageFileStream("SGame.bin", FileMode.Open, storeForApplication));
-          for (int index = 0; index < FileIO.saveRAM.Length; ++index)
-            FileIO.saveRAM[index] = binaryReader.ReadInt32();
+          BinaryReader binaryReader = new BinaryReader(new IsolatedStorageFileStream("SGame.bin", FileMode.Open, userStoreForApplication));
+          for (int i = 0; i < FileIO.saveRAM.Length; i++)
+          {
+            FileIO.saveRAM[i] = binaryReader.ReadInt32();
+          }
           binaryReader.Close();
         }
         catch
         {
         }
+        #else
+        try
+        {
+          string savePath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "SGame.bin");
+          if (File.Exists(savePath))
+          {
+            using (BinaryReader binaryReader = new BinaryReader(File.Open(savePath, FileMode.Open)))
+            {
+              for (int i = 0; i < FileIO.saveRAM.Length; i++)
+              {
+                FileIO.saveRAM[i] = binaryReader.ReadInt32();
+              }
+            }
+          }
+        }
+        catch
+        {
+        }
+        #endif
         return 1;
       }
 
       public static byte WriteSaveRAMData()
       {
-        IsolatedStorageFile storeForApplication = IsolatedStorageFile.GetUserStoreForApplication();
+        #if WINDOWS_PHONE
+        IsolatedStorageFile userStoreForApplication = IsolatedStorageFile.GetUserStoreForApplication();
         try
         {
-          BinaryWriter binaryWriter = new BinaryWriter((Stream) new IsolatedStorageFileStream("SGame.bin", FileMode.OpenOrCreate, storeForApplication));
-          for (int index = 0; index < FileIO.saveRAM.Length; ++index)
-            binaryWriter.Write(FileIO.saveRAM[index]);
+          BinaryWriter binaryWriter = new BinaryWriter(new IsolatedStorageFileStream("SGame.bin", FileMode.Create, userStoreForApplication));
+          for (int i = 0; i < FileIO.saveRAM.Length; i++)
+          {
+            binaryWriter.Write(FileIO.saveRAM[i]);
+          }
           binaryWriter.Close();
         }
         catch
         {
         }
+        #else
+        try
+        {
+          string savePath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "SGame.bin");
+          using (BinaryWriter binaryWriter = new BinaryWriter(File.Create(savePath)))
+          {
+            for (int i = 0; i < FileIO.saveRAM.Length; i++)
+            {
+              binaryWriter.Write(FileIO.saveRAM[i]);
+            }
+          }
+        }
+        catch
+        {
+        }
+        #endif
         return 1;
       }
     }

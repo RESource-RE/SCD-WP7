@@ -40,15 +40,15 @@ namespace Sonic_CD
 
       public Game()
       {
-        this.graphics = new GraphicsDeviceManager((Microsoft.Xna.Framework.Game) this);
-        this.graphics.IsFullScreen = true;
+        this.graphics = new GraphicsDeviceManager(this);
+        this.graphics.IsFullScreen = false;
         this.graphics.PreferredBackBufferWidth = 800;
         this.graphics.PreferredBackBufferHeight = 480;
-        this.graphics.PreferredBackBufferFormat = SurfaceFormat.Bgr565;
-        this.graphics.PreferredDepthStencilFormat = DepthFormat.None;
+        this.graphics.PreferredBackBufferFormat = SurfaceFormat.Color;
         this.graphics.PreparingDeviceSettings += new EventHandler<PreparingDeviceSettingsEventArgs>(this.graphics_PreparingDeviceSettings);
+        this.graphics.GraphicsProfile = GraphicsProfile.Reach;
         this.Content.RootDirectory = "Content";
-        this.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / 60.0);
+        this.TargetElapsedTime = TimeSpan.FromSeconds(0.016666666666666666);
         this.InactiveSleepTime = TimeSpan.FromSeconds(1.0);
       }
 
@@ -59,13 +59,15 @@ namespace Sonic_CD
 
       protected override void Initialize()
       {
-        SignedInGamer.SignedIn += new EventHandler<SignedInEventArgs>(this.GamerSignedInCallback);
 #if WINDOWS_PHONE
+        SignedInGamer.SignedIn += new EventHandler<SignedInEventArgs>(this.GamerSignedInCallback);
         if (Environment.DeviceType != 1)
         {
-          this.gamerServiceInstance = new GamerServicesComponent((Microsoft.Xna.Framework.Game) this);
-          this.Components.Add((IGameComponent) this.gamerServiceInstance);
+          this.gamerServiceInstance = new GamerServicesComponent(this);
+          this.Components.Add(this.gamerServiceInstance);
         }
+#else
+        GlobalAppDefinitions.gameOnlineActive = 0;
 #endif
         base.Initialize();
       }
