@@ -8,12 +8,20 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 using Sonic_CD;
 using System;
+#if !WINDOWS_PHONE
+using System.Windows.Media;
+#endif
 
 namespace Retro_Engine
 {
 
     public static class AudioPlayback
     {
+#if !WINDOWS_PHONE
+      private static System.Windows.Media.MediaPlayer wpfMediaPlayer;
+      private static string currentWpfTrack;
+#endif
+
       public const int MUSIC_STOPPED = 0;
       public const int MUSIC_PLAYING = 1;
       public const int MUSIC_PAUSED = 2;
@@ -40,20 +48,30 @@ namespace Retro_Engine
       {
         for (int index = 0; index < AudioPlayback.musicTracks.Length; ++index)
           AudioPlayback.musicTracks[index] = new MusicTrackInfo();
+#if !WINDOWS_PHONE
+        wpfMediaPlayer = new System.Windows.Media.MediaPlayer();
+        wpfMediaPlayer.MediaEnded += (s, e) => {
+          if (AudioPlayback.musicTracks[AudioPlayback.currentMusicTrack].loop)
+          {
+            wpfMediaPlayer.Position = TimeSpan.Zero;
+            wpfMediaPlayer.Play();
+          }
+        };
+#endif
       }
 
       private static void HeadphonesPauseMusicCheck(object sender, EventArgs eventArgs)
       {
-        if (MediaPlayer.State != MediaState.Paused || AudioPlayback.musicStatus != 1 || !AudioPlayback.musicTracks[AudioPlayback.currentMusicTrack].loop || StageSystem.stageMode == (byte) 2 || GlobalAppDefinitions.gameMode == (byte) 7)
+        if (Microsoft.Xna.Framework.Media.MediaPlayer.State != MediaState.Paused || AudioPlayback.musicStatus != 1 || !AudioPlayback.musicTracks[AudioPlayback.currentMusicTrack].loop || StageSystem.stageMode == (byte) 2 || GlobalAppDefinitions.gameMode == (byte) 7)
           return;
-        MediaPlayer.Resume();
+        Microsoft.Xna.Framework.Media.MediaPlayer.Resume();
       }
 
       public static void InitAudioPlayback()
       {
         FileData fData = new FileData();
         char[] fileName = new char[32 /*0x20*/];
-        MediaPlayer.MediaStateChanged += new EventHandler<EventArgs>(AudioPlayback.HeadphonesPauseMusicCheck);
+        Microsoft.Xna.Framework.Media.MediaPlayer.MediaStateChanged += new EventHandler<EventArgs>(AudioPlayback.HeadphonesPauseMusicCheck);
         for (int index = 0; index < 8; ++index)
           AudioPlayback.channelSfxNum[index] = -1;
         if (!FileIO.LoadFile("Data/Game/GameConfig.bin".ToCharArray(), fData))
@@ -146,18 +164,34 @@ namespace Retro_Engine
 
       public static void PauseSound()
       {
-        if (!MediaPlayer.GameHasControl)
+#if WINDOWS_PHONE
+        if (!Microsoft.Xna.Framework.Media.MediaPlayer.GameHasControl)
           return;
-        MediaPlayer.Pause();
+        Microsoft.Xna.Framework.Media.MediaPlayer.Pause();
         AudioPlayback.musicStatus = 2;
+#else
+        if (wpfMediaPlayer != null && currentWpfTrack != null)
+        {
+          wpfMediaPlayer.Pause();
+          AudioPlayback.musicStatus = 2;
+        }
+#endif
       }
 
       public static void ResumeSound()
       {
-        if (!MediaPlayer.GameHasControl)
+#if WINDOWS_PHONE
+        if (!Microsoft.Xna.Framework.Media.MediaPlayer.GameHasControl)
           return;
-        MediaPlayer.Resume();
+        Microsoft.Xna.Framework.Media.MediaPlayer.Resume();
         AudioPlayback.musicStatus = 1;
+#else
+        if (wpfMediaPlayer != null && currentWpfTrack != null)
+        {
+          wpfMediaPlayer.Play();
+          AudioPlayback.musicStatus = 1;
+        }
+#endif
       }
 
       public static void SetMusicTrack(char[] fileName, int trackNo, byte loopTrack, uint loopPoint)
@@ -187,34 +221,89 @@ namespace Retro_Engine
         if (volume > 100)
           volume = 100;
         AudioPlayback.musicVolume = volume;
-        if (!MediaPlayer.GameHasControl)
+#if WINDOWS_PHONE
+        if (!Microsoft.Xna.Framework.Media.MediaPlayer.GameHasControl)
           return;
-        MediaPlayer.Volume = (float) volume * 0.01f * AudioPlayback.musicVolumeSetting;
+        Microsoft.Xna.Framework.Media.MediaPlayer.Volume = (float) volume * 0.01f * AudioPlayback.musicVolumeSetting;
+#else
+        if (wpfMediaPlayer != null && currentWpfTrack != null)
+        {
+          wpfMediaPlayer.Volume = AudioPlayback.musicVolumeSetting;
+        }
+#endif
       }
 
       public static void PlayMusic(int trackNo)
       {
-        if (!MediaPlayer.GameHasControl || AudioPlayback.musicTracks[trackNo].trackName[0] == char.MinValue)
-          return;
-        string assetName = new string(AudioPlayback.musicTracks[trackNo].trackName).Remove(FileIO.StringLength(ref AudioPlayback.musicTracks[trackNo].trackName));
-        Song song = AudioPlayback.gameRef.Content.Load<Song>(assetName);
-        AudioPlayback.currentMusicTrack = trackNo;
-        MediaPlayer.Play(song);
-        MediaPlayer.IsRepeating = AudioPlayback.musicTracks[trackNo].loop;
-        MediaPlayer.IsMuted = false;
-        MediaPlayer.Volume = AudioPlayback.musicVolumeSetting;
-        AudioPlayback.musicVolume = 100;
-        AudioPlayback.musicStatus = 1;
+        if (Microsoft.Xna.Framework.Media.MediaPlayer.GameHasControl && AudioPlayback.musicTracks[trackNo].trackName[0] != '\0')
+        {
+          string text = new string(AudioPlayback.musicTracks[trackNo].trackName);
+          text = text.Remove(FileIO.StringLength(ref AudioPlayback.musicTracks[trackNo].trackName));
+          try
+          {
+#if WINDOWS_PHONE
+            Song song = AudioPlayback.gameRef.Content.Load<Song>(text);
+            AudioPlayback.currentMusicTrack = trackNo;
+            Microsoft.Xna.Framework.Media.MediaPlayer.Play(song);
+            Microsoft.Xna.Framework.Media.MediaPlayer.IsRepeating = AudioPlayback.musicTracks[trackNo].loop;
+            Microsoft.Xna.Framework.Media.MediaPlayer.IsMuted = false;
+            Microsoft.Xna.Framework.Media.MediaPlayer.Volume = AudioPlayback.musicVolumeSetting;
+            AudioPlayback.musicVolume = 100;
+            AudioPlayback.musicStatus = 1;
+#else
+            string musicPath;
+            if (text.StartsWith("Music/"))
+            {
+              musicPath = System.IO.Path.Combine("Content", text);
+            }
+            else
+            {
+              musicPath = System.IO.Path.Combine("Content", "Music", text);
+            }
+            string foundFile = musicPath + ".wma";
+            if (foundFile != null)
+            {
+              string fullPath = System.IO.Path.GetFullPath(foundFile);
+              wpfMediaPlayer.Open(new Uri(fullPath));
+              wpfMediaPlayer.Volume = AudioPlayback.musicVolumeSetting;
+              wpfMediaPlayer.Play();
+              
+              currentWpfTrack = text;
+              AudioPlayback.currentMusicTrack = trackNo;
+              AudioPlayback.musicVolume = 100;
+              AudioPlayback.musicStatus = 1;
+            }
+            else
+            {
+              AudioPlayback.musicStatus = 0;
+            }
+#endif
+          }
+          catch
+          {
+            AudioPlayback.musicStatus = 0;
+          }
+        }
       }
 
       public static void StopMusic()
       {
-        if (!MediaPlayer.GameHasControl)
-          return;
-        MediaPlayer.Stop();
-        MediaPlayer.IsRepeating = false;
-        MediaPlayer.IsMuted = true;
+#if WINDOWS_PHONE
+        if (Microsoft.Xna.Framework.Media.MediaPlayer.GameHasControl)
+        {
+          Microsoft.Xna.Framework.Media.MediaPlayer.Stop();
+          Microsoft.Xna.Framework.Media.MediaPlayer.IsRepeating = false;
+          Microsoft.Xna.Framework.Media.MediaPlayer.IsMuted = true;
+          AudioPlayback.musicStatus = 0;
+        }
+#else
+        if (wpfMediaPlayer != null && currentWpfTrack != null)
+        {
+          wpfMediaPlayer.Stop();
+          currentWpfTrack = null;
+        }
         AudioPlayback.musicStatus = 0;
+#endif
       }
 
       public static void LoadSfx(char[] fileName, int sfxNum)
@@ -359,5 +448,16 @@ namespace Retro_Engine
           return;
         AudioPlayback.nextChannelPos = 0;
       }
+
+#if !WINDOWS_PHONE
+      public static void Dispose()
+      {
+        if (wpfMediaPlayer != null)
+        {
+          wpfMediaPlayer.Close();
+          wpfMediaPlayer = null;
+        }
+      }
+#endif
     }
 }

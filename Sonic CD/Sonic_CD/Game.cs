@@ -380,7 +380,7 @@ namespace Sonic_CD
         }
         if (!Guide.IsTrialMode)
           return;
-        GlobalAppDefinitions.gameTrialMode = (byte) 1;
+        GlobalAppDefinitions.gameTrialMode = (byte) 0;
       }
 
       protected override void UnloadContent()
