@@ -9,8 +9,6 @@ I used dotpeek to export the project and vs2022 to compile, I also used [this](h
 
 # Known issues
 
-PC port has no music, only sounds (fixes will be in the pc-fixes branch)
-
 ## How to build
 
 Install the following dependencies:
